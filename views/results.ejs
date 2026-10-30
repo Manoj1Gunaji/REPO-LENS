@@ -1,0 +1,226 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="app-layout">
+    <!-- TOP NAVBAR -->
+    <header class="topbar">
+        <div class="brand-area">
+            <div class="brand-icon">
+                <i data-lucide="code-2"></i>
+            </div>
+            <h2>CodeLens <span>AI</span></h2>
+            <span class="version">V1.0</span>
+        </div>
+
+        <button class="repo-selector" type="button">
+            <i data-lucide="folder-git-2"></i>
+            <span><%= typeof repositoryName !== 'undefined' ? repositoryName : 'TaskMaster API' %></span>
+            <i data-lucide="chevron-down"></i>
+        </button>
+
+        <nav class="top-navigation">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/upload">Upload</a>
+            <a href="/explorer">Explorer</a>
+            <a href="/search" class="active">
+                <i data-lucide="sparkles"></i>
+                AI Search
+            </a>
+            <a href="/evaluation">Evaluation</a>
+        </nav>
+
+        <div class="top-actions">
+            <div class="engine-status">
+                <span class="status-dot"></span>
+                Engine Online
+            </div>
+            <a href="/search" class="secondary-button">
+                <i data-lucide="rotate-ccw"></i>
+                New Search
+            </a>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <p class="sidebar-heading">WORKSPACE</p>
+        <a href="/dashboard" class="sidebar-link">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/upload" class="sidebar-link">
+            <i data-lucide="cloud-upload"></i>
+            <span>Upload Repo</span>
+        </a>
+        <a href="/explorer" class="sidebar-link">
+            <i data-lucide="file-code-2"></i>
+            <span>Code Explorer</span>
+        </a>
+        <a href="/search" class="sidebar-link selected">
+            <i data-lucide="sparkles"></i>
+            <span>AI Code Search</span>
+        </a>
+        <a href="/evaluation" class="sidebar-link">
+            <i data-lucide="chart-column"></i>
+            <span>Evaluation Suite</span>
+        </a>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <!-- SEARCH BAR HEADER -->
+        <div style="background: #0d1120; border: 1px solid #202b40; border-radius: 16px; padding: 20px 24px; margin-bottom: 25px;">
+            <form action="/search" method="POST" style="display: flex; gap: 12px; margin-bottom: 14px;">
+                <input type="hidden" name="repositoryId" value="<%= typeof repositoryId !== 'undefined' ? repositoryId : '' %>">
+                <div style="position: relative; flex: 1;">
+                    <input
+                        type="text"
+                        name="query"
+                        class="text-input"
+                        style="height: 46px; font-size: 14px; padding-left: 40px; border-radius: 10px; background: #070a14;"
+                        value="<%= query %>"
+                        required
+                    >
+                    <i data-lucide="search" style="position: absolute; left: 14px; top: 14px; width: 18px; color: #9b8cff;"></i>
+                </div>
+                <button type="submit" class="primary-button" style="height: 46px; padding: 0 20px; border-radius: 10px;">
+                    <i data-lucide="sparkles"></i>
+                    Search
+                </button>
+            </form>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #8fa2bb; flex-wrap: wrap; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <span>Found <strong><%= results.length %></strong> grounded evidence snippets</span>
+                    <span>•</span>
+                    <span>Repository: <strong><%= repositoryName %></strong></span>
+                    <span>•</span>
+                    <span>Search Mode: <strong style="color: #a78bfa; text-transform: uppercase;"><%= mode %></strong></span>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <a href="/explorer" class="secondary-button" style="padding: 6px 12px; font-size: 11px;">
+                        <i data-lucide="folder-tree"></i> View Full Tree
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI GROUNDED EXPLANATION PANEL -->
+        <section class="panel" style="margin-bottom: 30px; border-color: #3b2d71; background: linear-gradient(180deg, #0f1225 0%, #0c101e 100%);">
+            <div class="panel-header" style="border-bottom: 1px solid #252a46; padding-bottom: 15px; margin-bottom: 18px;">
+                <h3 style="color: #c4b5fd;">
+                    <i data-lucide="bot" style="color: #a78bfa;"></i>
+                    AI Code Intelligence Explanation
+                </h3>
+                <span style="background: rgba(139, 92, 246, 0.15); color: #a78bfa; border: 1px solid #4c3882; padding: 4px 10px; border-radius: 20px; font-size: 11px;">
+                    <%= aiResponse.provider %>
+                </span>
+            </div>
+
+            <div class="ai-explanation-content" style="color: #e2e8f0; font-size: 13.5px; line-height: 1.7; white-space: pre-wrap; font-family: 'Inter', sans-serif;">
+<%- aiResponse.explanation %>
+            </div>
+        </section>
+
+        <!-- RETRIEVED EVIDENCE LIST -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+            <h2 style="font-size: 18px; font-weight: 700; color: #f1f5f9;">
+                Grounded Source-Code Evidence (<%= results.length %>)
+            </h2>
+            <span style="font-size: 12px; color: #64748b;">Ranked by Okapi BM25 + AST + Cosine Similarity</span>
+        </div>
+
+        <% if (results.length === 0) { %>
+            <div class="panel" style="text-align: center; padding: 40px;">
+                <p style="color: #94a3b8; font-size: 14px;">No relevant code snippets found for this query in the repository.</p>
+                <a href="/search" class="primary-button" style="display: inline-flex; margin-top: 15px;">Try Another Question</a>
+            </div>
+        <% } %>
+
+        <% results.forEach((item, index) => { %>
+            <article class="panel" style="margin-bottom: 22px; padding: 20px;">
+                <!-- EVIDENCE CARD HEADER -->
+                <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; margin-bottom: 14px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="background: #1e1b4b; color: #a5b4fc; border: 1px solid #3730a3; width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;">
+                            #<%= index + 1 %>
+                        </span>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <strong style="font-size: 14px; color: #f8fafc; font-family: Consolas, monospace;">
+                                    <%= item.filePath %>
+                                </strong>
+                                <span style="background: #172554; color: #60a5fa; border: 1px solid #1e40af; padding: 2px 8px; border-radius: 6px; font-size: 11px; font-family: monospace;">
+                                    Lines <%= item.startLine %>–<%= item.endLine %>
+                                </span>
+                                <% if (item.symbolName) { %>
+                                    <span style="background: #2e1065; color: #c084fc; border: 1px solid #581c87; padding: 2px 8px; border-radius: 6px; font-size: 11px;">
+                                        <%= item.symbolType %>: <strong><%= item.symbolName %></strong>
+                                    </span>
+                                <% } %>
+                            </div>
+                            <% if (item.docstring) { %>
+                                <p style="font-size: 11px; color: #94a3b8; margin-top: 4px; font-style: italic;">
+                                    "<%= item.docstring.replace(/[\/*#]/g, '').trim() %>"
+                                </p>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="background: #064e3b; color: #34d399; border: 1px solid #065f46; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;">
+                            <%= (item.score * 100).toFixed(1) %>% Match
+                        </span>
+                        <a href="/explorer?file=<%= encodeURIComponent(item.filePath) %>&line=<%= item.startLine %>" class="secondary-button" style="padding: 6px 12px; font-size: 11px;">
+                            <i data-lucide="external-link"></i>
+                            Open in Explorer
+                        </a>
+                    </div>
+                </div>
+
+                <!-- MATCH REASONS -->
+                <% if (item.matchReasons && item.matchReasons.length > 0) { %>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px;">
+                        <% item.matchReasons.forEach(reason => { %>
+                            <span style="background: #0f172a; border: 1px solid #1e293b; color: #94a3b8; padding: 3px 8px; border-radius: 6px; font-size: 10.5px;">
+                                <i data-lucide="check" style="width: 10px; display: inline-block; vertical-align: middle; color: #34d399;"></i>
+                                <%= reason %>
+                            </span>
+                        <% }) %>
+                    </div>
+                <% } %>
+
+                <!-- CODE SNIPPET -->
+                <div style="position: relative; background: #070a13; border: 1px solid #1e293b; border-radius: 10px; overflow: hidden;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; background: #0b0f1d; padding: 7px 14px; border-bottom: 1px solid #1e293b; font-size: 11px; color: #64748b;">
+                        <span><%= item.language || 'Code' %> snippet</span>
+                        <button type="button" onclick="copySnippet('code-<%= index %>')" style="background: none; border: none; color: #818cf8; font-size: 11px; display: flex; align-items: center; gap: 5px;">
+                            <i data-lucide="copy" style="width: 12px;"></i>
+                            Copy
+                        </button>
+                    </div>
+                    <pre style="margin: 0; padding: 14px; overflow-x: auto; font-family: 'JetBrains Mono', Consolas, monospace; font-size: 12.5px; line-height: 1.6;"><code id="code-<%= index %>" class="language-<%= (item.language || 'javascript').toLowerCase() %>"><%= item.content %></code></pre>
+                </div>
+            </article>
+        <% }) %>
+
+        <!-- FOOTER -->
+        <footer class="dashboard-footer" style="margin-top: 35px;">
+            <span>CodeLens AI — Understand Any Codebase. Find Every Function.</span>
+            <span>Grounded Retrieval • Exact Line Evidence</span>
+        </footer>
+    </main>
+</div>
+
+<script>
+function copySnippet(elementId) {
+    const text = document.getElementById(elementId).innerText;
+    navigator.clipboard.writeText(text).then(() => {
+        alert('Code snippet copied to clipboard!');
+    });
+}
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('pre code').forEach((el) => {
+        if (typeof hljs !== 'undefined') hljs.highlightElement(el);
+    });
+});
+</script>

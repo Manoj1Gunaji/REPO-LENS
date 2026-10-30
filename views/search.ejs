@@ -1,0 +1,219 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="app-layout">
+    <!-- TOP NAVBAR -->
+    <header class="topbar">
+        <div class="brand-area">
+            <div class="brand-icon">
+                <i data-lucide="code-2"></i>
+            </div>
+            <h2>CodeLens <span>AI</span></h2>
+            <span class="version">V1.0</span>
+        </div>
+
+        <button class="repo-selector" type="button">
+            <i data-lucide="folder-git-2"></i>
+            <span><%= typeof currentRepo !== 'undefined' && currentRepo ? (currentRepo.name || currentRepo) : 'TaskMaster API (Demo)' %></span>
+            <i data-lucide="chevron-down"></i>
+        </button>
+
+        <nav class="top-navigation">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/upload">Upload</a>
+            <a href="/explorer">Explorer</a>
+            <a href="/search" class="active">
+                <i data-lucide="sparkles"></i>
+                AI Search
+            </a>
+            <a href="/evaluation">Evaluation</a>
+        </nav>
+
+        <div class="top-actions">
+            <div class="engine-status">
+                <span class="status-dot"></span>
+                Engine Online
+            </div>
+            <a href="/upload" class="secondary-button">
+                <i data-lucide="cloud-upload"></i>
+                Upload
+            </a>
+        </div>
+    </header>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <p class="sidebar-heading">WORKSPACE</p>
+        <a href="/dashboard" class="sidebar-link">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+        </a>
+        <a href="/upload" class="sidebar-link">
+            <i data-lucide="cloud-upload"></i>
+            <span>Upload Repo</span>
+        </a>
+        <a href="/explorer" class="sidebar-link">
+            <i data-lucide="file-code-2"></i>
+            <span>Code Explorer</span>
+        </a>
+        <a href="/search" class="sidebar-link selected">
+            <i data-lucide="sparkles"></i>
+            <span>AI Code Search</span>
+        </a>
+        <a href="/evaluation" class="sidebar-link">
+            <i data-lucide="chart-column"></i>
+            <span>Evaluation Suite</span>
+        </a>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+        <div class="page-header">
+            <div>
+                <h1>AI Code Intelligence & Hybrid Search</h1>
+                <p>
+                    Query your indexed repository in natural language. Powered by Okapi BM25, AST symbol parsing, and vector embeddings.
+                </p>
+            </div>
+            <div class="header-buttons">
+                <a href="/evaluation" class="secondary-button">
+                    <i data-lucide="chart-column"></i>
+                    Run Benchmark
+                </a>
+            </div>
+        </div>
+
+        <!-- SEARCH INPUT CARD -->
+        <section class="upload-card" style="margin-top: 0; padding: 25px;">
+            <form action="/search" method="POST" id="searchForm">
+                <input type="hidden" name="repositoryId" id="repositoryId" value="<%= typeof currentRepo !== 'undefined' && currentRepo && currentRepo._id ? currentRepo._id : '' %>">
+                
+                <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+                    <div style="position: relative; flex: 1;">
+                        <input
+                            type="text"
+                            name="query"
+                            id="queryInput"
+                            class="text-input"
+                            style="height: 50px; font-size: 14px; padding-left: 42px; border-radius: 12px; background: #070a14;"
+                            placeholder="Ask any question about the codebase (e.g., Where is user authentication implemented?)..."
+                            value="<%= typeof query !== 'undefined' ? query : '' %>"
+                            required
+                        >
+                        <i data-lucide="search" style="position: absolute; left: 14px; top: 16px; width: 20px; color: #9b8cff;"></i>
+                    </div>
+
+                    <button type="submit" class="primary-button" style="height: 50px; padding: 0 24px; border-radius: 12px;">
+                        <i data-lucide="sparkles"></i>
+                        <span>Search</span>
+                    </button>
+                </div>
+
+                <!-- CONTROLS ROW -->
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between; border-top: 1px solid #1e293b; padding-top: 15px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 12px; color: #8fa2bb; font-weight: 600;">SEARCH MODE:</span>
+                        <select name="mode" id="modeSelect" style="background: #101526; color: #cbd5e1; border: 1px solid #252e43; border-radius: 8px; padding: 6px 12px; font-size: 12px; outline: none;">
+                            <option value="hybrid" <%= typeof mode === 'undefined' || mode === 'hybrid' ? 'selected' : '' %>>Hybrid Fusion (BM25 + AST + Vector)</option>
+                            <option value="lexical" <%= typeof mode !== 'undefined' && mode === 'lexical' ? 'selected' : '' %>>Okapi BM25 (Lexical Only)</option>
+                            <option value="symbol" <%= typeof mode !== 'undefined' && mode === 'symbol' ? 'selected' : '' %>>AST Symbol Search (Exact Identifiers)</option>
+                            <option value="semantic" <%= typeof mode !== 'undefined' && mode === 'semantic' ? 'selected' : '' %>>Semantic Vector Embeddings</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="font-size: 12px; color: #8fa2bb;">TOP RESULTS:</span>
+                        <select name="limit" style="background: #101526; color: #cbd5e1; border: 1px solid #252e43; border-radius: 8px; padding: 6px 12px; font-size: 12px; outline: none;">
+                            <option value="5">Top 5 Snippets</option>
+                            <option value="3">Top 3 Snippets</option>
+                            <option value="10">Top 10 Snippets</option>
+                        </select>
+                    </div>
+                </div>
+            </form>
+        </section>
+
+        <!-- SUGGESTED QUESTIONS CHIPS -->
+        <section style="margin-bottom: 30px;">
+            <p style="font-size: 12px; color: #64748b; font-weight: 600; margin-bottom: 12px; letter-spacing: 0.5px;">
+                SUGGESTED EXPLORATION QUERIES
+            </p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <button type="button" class="chip-query" onclick="setQuery(this.innerText)">Where is user authentication implemented?</button>
+                <button type="button" class="chip-query" onclick="setQuery(this.innerText)">Where is data retrieved from the database?</button>
+                <button type="button" class="chip-query" onclick="setQuery(this.innerText)">Where is input validation performed?</button>
+                <button type="button" class="chip-query" onclick="setQuery(this.innerText)">Where are file uploads processed?</button>
+                <button type="button" class="chip-query" onclick="setQuery(this.innerText)">Where are permissions and authorization checked?</button>
+                <button type="button" class="chip-query" onclick="setQuery(this.innerText)">Where is error handling configured?</button>
+            </div>
+        </section>
+
+        <!-- RECENT SEARCHES PANEL -->
+        <section class="panel">
+            <div class="panel-header">
+                <h3><i data-lucide="history"></i> How Hybrid Retrieval Works</h3>
+                <span style="color: #8b5cf6;">Exact Line Verification</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;">
+                <div style="background: #090d19; border: 1px solid #202b40; border-radius: 12px; padding: 18px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #818cf8;">
+                        <i data-lucide="file-text" style="width: 18px;"></i>
+                        <strong style="font-size: 13px;">Okapi BM25 (40%)</strong>
+                    </div>
+                    <p style="font-size: 12px; color: #8fa2bb; line-height: 1.6;">
+                        Term frequency & inverse document frequency with tokenized snake_case & camelCase splitting.
+                    </p>
+                </div>
+                <div style="background: #090d19; border: 1px solid #202b40; border-radius: 12px; padding: 18px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #c084fc;">
+                        <i data-lucide="code-2" style="width: 18px;"></i>
+                        <strong style="font-size: 13px;">AST Symbol Match (20%)</strong>
+                    </div>
+                    <p style="font-size: 12px; color: #8fa2bb; line-height: 1.6;">
+                        Direct matching on parsed function declarations, classes, methods, and REST route endpoints.
+                    </p>
+                </div>
+                <div style="background: #090d19; border: 1px solid #202b40; border-radius: 12px; padding: 18px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; color: #2dd4bf;">
+                        <i data-lucide="sparkles" style="width: 18px;"></i>
+                        <strong style="font-size: 13px;">Vector Cosine (40%)</strong>
+                    </div>
+                    <p style="font-size: 12px; color: #8fa2bb; line-height: 1.6;">
+                        128-dimensional normalized dense vectors capturing semantic meaning across comments and identifiers.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FOOTER -->
+        <footer class="dashboard-footer" style="margin-top: 35px;">
+            <span>CodeLens AI — Understand Any Codebase. Find Every Function.</span>
+            <span>Grounded Retrieval • Exact Line Evidence</span>
+        </footer>
+    </main>
+</div>
+
+<style>
+.chip-query {
+    background: #0e1424;
+    border: 1px solid #202b40;
+    border-radius: 20px;
+    padding: 8px 14px;
+    color: #94a3b8;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.chip-query:hover {
+    background: #161e33;
+    border-color: #8b5cf6;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+</style>
+
+<script>
+function setQuery(text) {
+    document.getElementById('queryInput').value = text;
+    document.getElementById('searchForm').submit();
+}
+</script>

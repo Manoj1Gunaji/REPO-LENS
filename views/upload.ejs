@@ -1,0 +1,415 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="app-layout">
+
+    <!-- TOP NAVBAR -->
+    <header class="topbar">
+
+        <div class="brand-area">
+            <div class="brand-icon">
+                <i data-lucide="code-2"></i>
+            </div>
+
+            <h2>CodeLens <span>AI</span></h2>
+            <span class="version">V1.0</span>
+        </div>
+
+        <button class="repo-selector">
+            <i data-lucide="folder-git-2"></i>
+            TaskMaster API (Demo)
+            <i data-lucide="chevron-down"></i>
+        </button>
+
+        <nav class="top-navigation">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/upload" class="active">Upload</a>
+            <a href="/explorer">Explorer</a>
+            <a href="/search">
+                <i data-lucide="sparkles"></i>
+                AI Search
+            </a>
+            <a href="/evaluation">Evaluation</a>
+        </nav>
+
+        <div class="top-actions">
+            <div class="engine-status">
+                <span class="status-dot"></span>
+                Engine Online
+            </div>
+
+            <a href="/search" class="ask-button">
+                <i data-lucide="sparkles"></i>
+                Ask Question
+            </a>
+        </div>
+
+    </header>
+
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <p class="sidebar-heading">WORKSPACE</p>
+
+        <a href="/dashboard" class="sidebar-link">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/upload" class="sidebar-link selected">
+            <i data-lucide="cloud-upload"></i>
+            <span>Upload Repo</span>
+        </a>
+
+        <a href="/explorer" class="sidebar-link">
+            <i data-lucide="file-code-2"></i>
+            <span>Code Explorer</span>
+        </a>
+
+        <a href="/search" class="sidebar-link">
+            <i data-lucide="sparkles"></i>
+            <span>AI Code Search</span>
+        </a>
+
+        <a href="/evaluation" class="sidebar-link">
+            <i data-lucide="chart-column"></i>
+            <span>Evaluation Suite</span>
+        </a>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <div class="page-heading">
+            <div class="heading-icon">
+                <i data-lucide="database"></i>
+            </div>
+
+            <div>
+                <h1>Repository Ingestion & Indexing Engine</h1>
+
+                <p>
+                    Upload a ZIP archive or specify a local directory.
+                    Files are securely extracted, parsed into AST symbols,
+                    and indexed for hybrid search.
+                </p>
+            </div>
+        </div>
+
+
+        <!-- INSTANT DEMO BANNER -->
+        <div class="demo-banner">
+
+            <div class="demo-icon">
+                <i data-lucide="sparkles"></i>
+            </div>
+
+            <div class="demo-text">
+                <h3>Instant Demo: TaskMaster API</h3>
+
+                <p>
+                    Quickly load a pre-configured repository with 12 files
+                    and 22 AST symbols to test the search engine.
+                </p>
+            </div>
+
+            <form action="/api/repositories/demo" method="POST">
+                <button type="submit" class="demo-button">
+                    Load Demo Repository
+                    <i data-lucide="arrow-right"></i>
+                </button>
+            </form>
+
+        </div>
+
+
+        <!-- UPLOAD TABS -->
+        <div class="upload-tabs">
+
+            <button class="tab-button active" id="zipTab" type="button">
+                <i data-lucide="file-archive"></i>
+                Upload ZIP Archive
+            </button>
+
+            <button class="tab-button" id="localTab" type="button">
+                <i data-lucide="folder"></i>
+                Local Directory Path
+            </button>
+
+        </div>
+
+
+        <!-- ZIP UPLOAD FORM -->
+        <section class="upload-card" id="zipSection">
+
+            <form
+                action="/api/repositories/upload"
+                method="POST"
+                enctype="multipart/form-data"
+                id="zipForm"
+            >
+
+                <label class="input-label" for="repoName">
+                    REPOSITORY DISPLAY NAME
+                    <span>(OPTIONAL)</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="repoName"
+                    name="repositoryName"
+                    class="text-input"
+                    placeholder="e.g. my-awesome-backend"
+                >
+
+                <label class="drop-zone" id="dropZone" for="zipFile">
+
+                    <input
+                        type="file"
+                        id="zipFile"
+                        name="repository"
+                        accept=".zip,application/zip"
+                        hidden
+                        required
+                    >
+
+                    <div class="upload-icon">
+                        <i data-lucide="file-archive"></i>
+                    </div>
+
+                    <h3 id="dropTitle">
+                        Choose a ZIP archive or drag & drop here
+                    </h3>
+
+                    <p>
+                        Maximum archive size: 500MB.
+                        ZIP extraction safeguards enabled.
+                    </p>
+
+                    <span class="browse-button">
+                        Browse Files
+                    </span>
+
+                    <span id="selectedFile" class="selected-file"></span>
+
+                </label>
+
+                <button type="submit" class="submit-button">
+                    <i data-lucide="zap"></i>
+                    Start Upload & Indexing
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- LOCAL DIRECTORY FORM -->
+        <section class="upload-card hidden" id="localSection">
+
+            <form
+                action="/api/repositories/local"
+                method="POST"
+                id="localForm"
+            >
+
+                <label class="input-label" for="localRepoName">
+                    REPOSITORY DISPLAY NAME
+                    <span>(OPTIONAL)</span>
+                </label>
+
+                <input
+                    type="text"
+                    id="localRepoName"
+                    name="repositoryName"
+                    class="text-input"
+                    placeholder="e.g. my-awesome-backend"
+                >
+
+                <label class="input-label path-label" for="directoryPath">
+                    LOCAL DIRECTORY PATH OR PUBLIC GITHUB URL
+                </label>
+
+                <div class="path-input-wrapper">
+                    <i data-lucide="folder-open"></i>
+
+                    <input
+                        type="text"
+                        id="directoryPath"
+                        name="directoryPath"
+                        class="text-input"
+                        placeholder="C:\Users\YourName\Projects\my-project or https://github.com/owner/repository"
+                        required
+                    >
+                </div>
+
+                <p class="path-hint">
+                    <i data-lucide="info"></i>
+                    Enter a local path accessible to the backend, or a public
+                    GitHub repository URL. Generated files and dependencies are skipped.
+                </p>
+
+                <button type="submit" class="submit-button">
+                    <i data-lucide="folder-search"></i>
+                    Index Repository
+                </button>
+
+            </form>
+
+        </section>
+
+
+        <!-- INFORMATION CARDS -->
+        <section class="info-grid">
+
+            <div class="info-card">
+
+                <div class="info-heading">
+                    <i data-lucide="shield-check"></i>
+                    <h3>Security & Archive Guardrails</h3>
+                </div>
+
+                <p>
+                    Defends against ZIP Slip, enforces archive size limits,
+                    validates entries, and isolates repository storage.
+                    Uploaded code is never executed.
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <div class="info-heading">
+                    <i data-lucide="code-2"></i>
+                    <h3>Supported Languages</h3>
+                </div>
+
+                <p>
+                    JavaScript, TypeScript, JSX, TSX, Python, Java,
+                    C++, and more through the extensible parser system.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer class="upload-footer">
+            <span>CodeLens AI — Intelligent Repository Explorer</span>
+            <span>Secure ingestion • AST parsing • Hybrid indexing</span>
+        </footer>
+
+    </main>
+
+</div>
+
+
+<!-- PAGE INTERACTIONS -->
+<script>
+
+    lucide.createIcons();
+
+    const zipTab = document.getElementById("zipTab");
+    const localTab = document.getElementById("localTab");
+
+    const zipSection = document.getElementById("zipSection");
+    const localSection = document.getElementById("localSection");
+
+    zipTab.addEventListener("click", () => {
+
+        zipTab.classList.add("active");
+        localTab.classList.remove("active");
+
+        zipSection.classList.remove("hidden");
+        localSection.classList.add("hidden");
+
+    });
+
+    localTab.addEventListener("click", () => {
+
+        localTab.classList.add("active");
+        zipTab.classList.remove("active");
+
+        localSection.classList.remove("hidden");
+        zipSection.classList.add("hidden");
+
+    });
+
+
+    // ZIP FILE SELECTION
+
+    const zipFile = document.getElementById("zipFile");
+    const dropZone = document.getElementById("dropZone");
+    const selectedFile = document.getElementById("selectedFile");
+    const dropTitle = document.getElementById("dropTitle");
+
+    function showSelectedFile(file) {
+
+        if (!file) return;
+
+        if (!file.name.toLowerCase().endsWith(".zip")) {
+            alert("Please select a ZIP file.");
+            zipFile.value = "";
+            selectedFile.textContent = "";
+            dropTitle.textContent =
+                "Choose a ZIP archive or drag & drop here";
+            return;
+        }
+
+        if (file.size > 500 * 1024 * 1024) {
+            alert("Maximum archive size is 500MB.");
+            zipFile.value = "";
+            selectedFile.textContent = "";
+            return;
+        }
+
+        dropTitle.textContent = "ZIP archive selected";
+        selectedFile.textContent =
+            file.name + " (" + (file.size / (1024 * 1024)).toFixed(2) + " MB)";
+
+    }
+
+    zipFile.addEventListener("change", () => {
+        showSelectedFile(zipFile.files[0]);
+    });
+
+
+    // DRAG AND DROP
+
+    dropZone.addEventListener("dragover", (event) => {
+        event.preventDefault();
+        dropZone.classList.add("drag-active");
+    });
+
+    dropZone.addEventListener("dragleave", () => {
+        dropZone.classList.remove("drag-active");
+    });
+
+    dropZone.addEventListener("drop", (event) => {
+
+        event.preventDefault();
+        dropZone.classList.remove("drag-active");
+
+        const files = event.dataTransfer.files;
+
+        if (files.length > 0) {
+            const file = files[0];
+
+            try {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                zipFile.files = dataTransfer.files;
+                showSelectedFile(file);
+            } catch (error) {
+                alert("Unable to select this file. Please use Browse Files.");
+            }
+        }
+
+    });
+
+</script>
+

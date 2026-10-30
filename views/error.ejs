@@ -1,0 +1,45 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="app-layout">
+    <header class="topbar">
+        <div class="brand-area">
+            <div class="brand-icon">
+                <i data-lucide="code-2"></i>
+            </div>
+            <h2>CodeLens <span>AI</span></h2>
+            <span class="version">V1.0</span>
+        </div>
+        <nav class="top-navigation">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/upload">Upload</a>
+            <a href="/explorer">Explorer</a>
+            <a href="/search"><i data-lucide="sparkles"></i> AI Search</a>
+            <a href="/evaluation">Evaluation</a>
+        </nav>
+        <div class="top-actions">
+            <a href="/dashboard" class="secondary-button"><i data-lucide="arrow-left"></i> Back to Dashboard</a>
+        </div>
+    </header>
+
+    <main class="main-content" style="margin-left: 0; display: flex; align-items: center; justify-content: center; min-height: 80vh;">
+        <div style="max-width: 600px; text-align: center; background: #0d1120; border: 1px solid #202b40; border-radius: 19px; padding: 45px 35px;">
+            <div style="width: 64px; height: 64px; border-radius: 16px; background: rgba(239, 68, 68, 0.15); color: #ef4444; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <i data-lucide="alert-triangle" style="width: 32px; height: 32px;"></i>
+            </div>
+            <h1 style="font-size: 26px; margin-bottom: 12px; color: #f1f5f9;">Something went wrong</h1>
+            <p style="color: #94a3b8; font-size: 14px; line-height: 1.6; margin-bottom: 25px;">
+                <%= typeof message !== 'undefined' ? message : 'An unexpected error occurred while processing your request.' %>
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center;">
+                <a href="/dashboard" class="primary-button">
+                    <i data-lucide="layout-dashboard"></i>
+                    Go to Dashboard
+                </a>
+                <a href="/upload" class="secondary-button">
+                    <i data-lucide="cloud-upload"></i>
+                    Upload Repository
+                </a>
+            </div>
+        </div>
+    </main>
+</div>

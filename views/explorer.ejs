@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CodeLens AI | Code Explorer</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/explorer.css">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Syntax highlighting -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+</head>
+
+<body>
+
+<div class="app-layout">
+
+    <!-- TOP NAVBAR -->
+    <header class="topbar">
+
+        <div class="brand-area">
+            <div class="brand-icon">
+                <i data-lucide="code-2"></i>
+            </div>
+
+            <h2>CodeLens <span>AI</span></h2>
+            <span class="version">V1.0</span>
+        </div>
+
+        <button class="repo-selector" type="button">
+            <i data-lucide="folder-git-2"></i>
+            <span id="currentRepo"><%= typeof currentRepo !== 'undefined' && currentRepo ? currentRepo.name : 'No repository indexed' %></span>
+            <i data-lucide="chevron-down"></i>
+        </button>
+
+        <nav class="top-navigation">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/upload">Upload</a>
+            <a href="/explorer" class="active">Explorer</a>
+            <a href="/search">
+                <i data-lucide="sparkles"></i>
+                AI Search
+            </a>
+            <a href="/evaluation">Evaluation</a>
+        </nav>
+
+        <div class="top-actions">
+
+            <div class="engine-status">
+                <span class="status-dot"></span>
+                Engine Online
+            </div>
+
+            <a href="/search" class="ask-button">
+                <i data-lucide="search"></i>
+                Ask Question
+            </a>
+
+        </div>
+
+    </header>
+
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <p class="sidebar-heading">WORKSPACE</p>
+
+        <a href="/dashboard" class="sidebar-link">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/upload" class="sidebar-link">
+            <i data-lucide="cloud-upload"></i>
+            <span>Upload Repo</span>
+        </a>
+
+        <a href="/explorer" class="sidebar-link selected">
+            <i data-lucide="file-code-2"></i>
+            <span>Code Explorer</span>
+        </a>
+
+        <a href="/search" class="sidebar-link">
+            <i data-lucide="sparkles"></i>
+            <span>AI Code Search</span>
+        </a>
+
+        <a href="/evaluation" class="sidebar-link">
+            <i data-lucide="chart-column"></i>
+            <span>Evaluation Suite</span>
+        </a>
+
+
+        <div class="sidebar-bottom">
+
+            <div class="engine-card">
+                <p>CodeLens Engine</p>
+                <span>BM25 + Semantic Hybrid Search</span>
+            </div>
+
+        </div>
+
+    </aside>
+
+
+    <!-- EXPLORER WORKSPACE -->
+    <main class="explorer-workspace">
+
+
+        <!-- FILE TREE PANEL -->
+        <section class="file-panel">
+
+            <div class="file-search">
+                <i data-lucide="search"></i>
+
+                <input
+                    type="text"
+                    id="fileSearch"
+                    placeholder="Search files..."
+                >
+            </div>
+
+
+            <div class="tree-container" id="fileTree">
+
+                <!-- TREE WILL BE CREATED BY JAVASCRIPT -->
+
+            </div>
+
+
+            <div class="file-panel-footer">
+                <span id="fileCount">12 files</span>
+                <span>All</span>
+            </div>
+
+        </section>
+
+
+        <!-- CODE VIEWER -->
+        <section class="code-panel">
+
+            <div class="code-header">
+
+                <div class="file-title">
+                    <i data-lucide="file-code-2"></i>
+                    <span id="selectedFileName">package.json</span>
+                </div>
+
+                <div class="code-actions">
+
+                    <span class="language-badge" id="languageBadge">
+                        JSON
+                    </span>
+
+                    <button class="copy-button" id="copyButton">
+                        <i data-lucide="copy"></i>
+                        Copy
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="code-content" id="codeContent">
+
+                <div class="empty-code">
+                    <i data-lucide="file-code"></i>
+                    <h3>Select a file to explore</h3>
+                    <p>Choose a source file from the repository tree.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FILE OVERVIEW PANEL -->
+        <aside class="overview-panel">
+
+            <div class="overview-header">
+
+                <h3>
+                    <i data-lucide="info"></i>
+                    FILE OVERVIEW
+                </h3>
+
+                <span id="fileSize">0 KB</span>
+
+            </div>
+
+
+            <div class="overview-details">
+
+                <div>
+                    <span>Language:</span>
+                    <strong id="overviewLanguage">-</strong>
+                </div>
+
+                <div>
+                    <span>Total Lines:</span>
+                    <strong id="overviewLines">0</strong>
+                </div>
+
+                <div>
+                    <span>Symbols Found:</span>
+                    <strong id="overviewSymbols">0</strong>
+                </div>
+
+            </div>
+
+
+            <!-- SYMBOL FILTERS -->
+            <div class="symbol-filters">
+
+                <button class="filter-button active" data-filter="All">
+                    All
+                </button>
+
+                <button class="filter-button" data-filter="Function">
+                    Function
+                </button>
+
+                <button class="filter-button" data-filter="Class">
+                    Class
+                </button>
+
+                <button class="filter-button" data-filter="Method">
+                    Method
+                </button>
+
+                <button class="filter-button" data-filter="Route">
+                    Route
+                </button>
+
+            </div>
+
+
+            <!-- SYMBOL LIST -->
+            <div class="symbol-list" id="symbolList">
+
+                <div class="no-symbols">
+                    Select a file to view its symbols
+                </div>
+
+            </div>
+
+        </aside>
+
+    </main>
+
+</div>
+
+
+<script src="/js/explorer.js"></script>
+
+<script>
+    lucide.createIcons();
+</script>
+
+</body>
+</html>

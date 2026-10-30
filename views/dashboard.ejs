@@ -1,0 +1,284 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="app-layout">
+
+    <%- include("includes/navbar") %>
+
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <p class="sidebar-heading">WORKSPACE</p>
+
+        <a href="/dashboard" class="sidebar-link selected">
+            <i data-lucide="layout-dashboard"></i>
+            <span>Dashboard</span>
+        </a>
+
+        <a href="/upload" class="sidebar-link">
+            <i data-lucide="cloud-upload"></i>
+            <span>Upload Repo</span>
+        </a>
+
+        <a href="/explorer" class="sidebar-link">
+            <i data-lucide="file-code-2"></i>
+            <span>Code Explorer</span>
+        </a>
+
+        <a href="/search" class="sidebar-link">
+            <i data-lucide="sparkles"></i>
+            <span>AI Code Search</span>
+        </a>
+
+        <a href="/evaluation" class="sidebar-link">
+            <i data-lucide="chart-column"></i>
+            <span>Evaluation Suite</span>
+        </a>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- PAGE HEADER -->
+        <section class="page-header">
+
+            <div>
+                <h1>Repository Intelligence Dashboard</h1>
+
+                <p>
+                    Real-time analytics across indexed source-code repositories,
+                    AST symbols, and search queries.
+                </p>
+            </div>
+
+            <div class="header-buttons">
+                <a href="/upload" class="secondary-button">
+                    <i data-lucide="cloud-upload"></i>
+                    Upload Repository
+                </a>
+
+                <a href="/search" class="primary-button">
+                    <i data-lucide="sparkles"></i>
+                    New AI Search
+                </a>
+            </div>
+
+        </section>
+
+
+        <!-- STATISTICS -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Repositories</span>
+                    <i data-lucide="folder-git-2" class="purple-icon"></i>
+                </div>
+
+                <h2>1</h2>
+
+                <p class="success-text">
+                    <i data-lucide="check-circle"></i>
+                    1 Ready for Search
+                </p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Indexed Files</span>
+                    <i data-lucide="file-code" class="purple-icon"></i>
+                </div>
+
+                <h2>12</h2>
+
+                <p>Filtered &amp; Tokenized</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Functions &amp; Classes</span>
+                    <i data-lucide="binary" class="cyan-icon"></i>
+                </div>
+
+                <h2>22</h2>
+
+                <p class="purple-text">Parsed with Line Ranges</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Code Snippets</span>
+                    <i data-lucide="layers" class="green-icon"></i>
+                </div>
+
+                <h2>39</h2>
+
+                <p>BM25 &amp; Vector Indexed</p>
+            </div>
+
+
+            <div class="stat-card">
+                <div class="stat-top">
+                    <span>Searches Executed</span>
+                    <i data-lucide="search" class="yellow-icon"></i>
+                </div>
+
+                <h2>8</h2>
+
+                <p>Query History Logged</p>
+            </div>
+
+        </section>
+
+
+        <!-- ANALYTICS -->
+        <section class="analytics-grid">
+
+            <!-- LANGUAGE DISTRIBUTION -->
+            <div class="panel language-panel">
+
+                <div class="panel-header">
+                    <h3>
+                        <i data-lucide="chart-pie"></i>
+                        Language Distribution
+                    </h3>
+
+                    <span>2 languages</span>
+                </div>
+
+                <div class="chart-area">
+
+                    <div class="donut-chart">
+                        <div class="donut-hole"></div>
+                    </div>
+
+                </div>
+
+                <div class="chart-legend">
+
+                    <div>
+                        <span class="legend-color json"></span>
+                        JSON (1)
+                    </div>
+
+                    <div>
+                        <span class="legend-color javascript"></span>
+                        JavaScript (11)
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- INDEXED REPOSITORIES -->
+            <div class="panel repositories-panel">
+
+                <div class="panel-header">
+                    <h3>
+                        <i data-lucide="folder-git-2"></i>
+                        Indexed Repositories
+                    </h3>
+
+                    <a href="/upload">+ Upload More</a>
+                </div>
+
+                <div class="repository-item">
+
+                    <div class="repository-icon">
+                        <i data-lucide="folder-git-2"></i>
+                    </div>
+
+                    <div class="repository-name">
+                        <h4>TaskMaster API (Demo)</h4>
+                        <span>taskmaster-api</span>
+                    </div>
+
+                    <div class="repository-meta">
+                        <span>12 files</span>
+                        <span>22 symbols</span>
+                    </div>
+
+                    <span class="completed-badge">completed</span>
+
+                    <i data-lucide="chevron-right" class="repo-arrow"></i>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RECENT SEARCH ACTIVITY -->
+        <section class="panel recent-panel">
+
+            <div class="panel-header">
+
+                <h3>
+                    <i data-lucide="search"></i>
+                    Recent Search Activity
+                </h3>
+
+                <a href="/search">Execute Search →</a>
+
+            </div>
+
+            <div class="search-grid">
+
+                <a href="/search" class="search-item">
+                    <h4>"Where is data retrieved from the database?"</h4>
+                    <div class="search-item-bottom">
+                        <span>TaskMaster API</span>
+                        <span>View Results →</span>
+                    </div>
+                </a>
+
+                <a href="/search" class="search-item">
+                    <h4>"Where is input validation performed?"</h4>
+                    <div class="search-item-bottom">
+                        <span>TaskMaster API</span>
+                        <span>View Results →</span>
+                    </div>
+                </a>
+
+                <a href="/search" class="search-item">
+                    <h4>"Where are file uploads processed?"</h4>
+                    <div class="search-item-bottom">
+                        <span>TaskMaster API</span>
+                        <span>View Results →</span>
+                    </div>
+                </a>
+
+                <a href="/search" class="search-item">
+                    <h4>"Where are permissions checked?"</h4>
+                    <div class="search-item-bottom">
+                        <span>TaskMaster API</span>
+                        <span>View Results →</span>
+                    </div>
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+        <footer class="dashboard-footer">
+            <span>CodeLens AI — Intelligent Repository Explorer</span>
+            <span>Built for developers.</span>
+        </footer>
+
+    </main>
+
+</div>
+
+<script>
+    lucide.createIcons();
+</script>
+
