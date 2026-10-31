@@ -96,14 +96,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 8080;
 
 app.listen(PORT, async () => {
-  console.log(`==================================================`);
-  console.log(`✦ CodeLens AI Engine is running on http://localhost:${PORT}`);
-  console.log(`  - Dashboard:   http://localhost:${PORT}/dashboard`);
-  console.log(`  - Upload:      http://localhost:${PORT}/upload`);
-  console.log(`  - Explorer:    http://localhost:${PORT}/explorer`);
-  console.log(`  - AI Search:   http://localhost:${PORT}/search`);
-  console.log(`  - Evaluation:  http://localhost:${PORT}/evaluation`);
-  console.log(`==================================================`);
+  console.log(` REPO-LENS AI Engine is running on http://localhost:${PORT}`);
 
   // Auto-seed TaskMaster API demo repository on startup
   try {
